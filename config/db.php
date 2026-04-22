@@ -66,38 +66,31 @@ class Database
      * @return \PDO
      * @throws \PDOException
      */
-    private static function createConnection()
-    {
-        // =============================================================
-        // HARDCODED CREDENTIALS (temporary) – bypass environment loader
-        // =============================================================
-        $driver = 'pgsql';
-        $host = 'localhost';
-        $port = '5432';
-        $dbname = 'trustlink';
-        $user = 'postgres';
-        $pass = 'Nasiuma.12?';   // Your actual password
-        $charset = 'utf8';
+private static function createConnection()
+{
+    // Read database credentials from environment variables (set on Render)
+    $driver = 'pgsql';
+    $host = getenv('DB_HOST') ?: 'localhost';
+    $port = getenv('DB_PORT') ?: '5432';
+    $dbname = getenv('DB_NAME') ?: 'trustlink';
+    $user = getenv('DB_USER') ?: 'postgres';
+    $pass = getenv('DB_PASS') ?: '';
+    $charset = 'utf8';
 
-        $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;options='--client_encoding=$charset'";
+    $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;options='--client_encoding=$charset'";
 
-        // Debug log to confirm connection attempt
-        error_log("createConnection: DSN=$dsn, user=$user, pass=" . (empty($pass) ? 'empty' : 'not empty'));
+    error_log("Connecting to DB: host=$host, dbname=$dbname, user=$user");
 
-        try {
-            $pdo = new \PDO($dsn, $user, $pass, self::$options);
-            
-            // Set timezone for PostgreSQL
-            $pdo->exec("SET timezone = 'Africa/Nairobi'");
-            
-            error_log("createConnection: connection successful");
-            return $pdo;
-        } catch (\PDOException $e) {
-            error_log("createConnection: connection failed: " . $e->getMessage());
-            self::logError($e->getMessage(), $dsn);
-            throw $e;
-        }
+    try {
+        $pdo = new \PDO($dsn, $user, $pass, self::$options);
+        $pdo->exec("SET timezone = 'Africa/Nairobi'");
+        error_log("Database connection successful");
+        return $pdo;
+    } catch (\PDOException $e) {
+        error_log("DB connection failed: " . $e->getMessage());
+        throw $e;
     }
+}
     
     /**
      * Close the database connection
