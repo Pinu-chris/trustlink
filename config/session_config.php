@@ -3,7 +3,7 @@
  * Global Session Configuration
  * Include this at the top of ALL PHP files that need session access.
  */
-session_start();
+ 
 // Only configure session if headers have NOT been sent yet
 if (!headers_sent()) {
     // Set session name (avoid default PHPSESSID)
@@ -32,9 +32,9 @@ if (!headers_sent()) {
 }
 
 // Start session if not already active
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+//if (session_status() === PHP_SESSION_NONE) {
+  //  session_start();
+//}
 
 // Helper functions remain unchanged
 function isLoggedIn() {
