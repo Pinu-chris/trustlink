@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrustLink - Verified Marketplace for Food & Services in Kenya</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Paste all that CSS code you shared here */
+        
+
+        
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="/">
+                    <span class="logo-icon">🌾</span>
+                    <span class="logo-text">TrustLink</span>
+                </a>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="/products.html" class="nav-link">Browse Products</a>
+                <a href="/how-it-works.html" class="nav-link">How It Works</a>
+                <div id="authLinks">
+                    <a href="/login.html" class="btn btn-outline">Login</a>
+                    <a href="/register.html" class="btn btn-primary">Sign Up</a>
+                </div>
+                <div id="userMenu" style="display: none;">
+                    <div class="dropdown">
+                        <button class="dropdown-btn" id="userMenuBtn">
+                            <img id="userAvatar" src="/assets/images/default/avatar.png" alt="Avatar" class="avatar-small">
+                            <span id="userName">Loading...</span>
+                            <span class="dropdown-icon">▼</span>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="/dashboard.html">Dashboard</a>
+                            <a href="/profile.html">Profile</a>
+                            <a href="/my-orders.html" id="buyerOrderLink">My Orders</a>
+                            <a href="/received-orders.html" id="farmerOrderLink" style="display:none;">Received Orders</a>
+                            <a href="/add-product.html" id="addProductLink" style="display:none;">Add Product</a>
+                            <a href="/admin.html" id="adminLink" style="display:none;">Admin Panel</a>
+                            <hr>
+                            <a href="#" id="logoutBtn">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Trusted Marketplace for<br>
+                    <span class="highlight">Kenyan Farmers & Services</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Buy fresh, verified produce directly from farmers. Hire trusted service providers with confidence.
+                    Every seller is verified, every product is traceable.
+                </p>
+                <div class="hero-buttons">
+                    <a href="/products.html" class="btn btn-primary btn-large">Start Shopping</a>
+                    <a href="/register.html?role=farmer" class="btn btn-outline btn-large">Sell on TrustLink</a>
+                </div>
+                <div class="trust-badges">
+                    <span>✓ Verified Sellers</span>
+                    <span>✓ Trust Score System</span>
+                    <span>✓ Direct from Farm</span>
+                    <span>✓ Fair Prices</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Why Choose TrustLink?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Verified Sellers</h3>
+                    <p>Every farmer and service provider undergoes ID verification and earns trust scores through customer reviews.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⭐</div>
+                    <h3>Trust Score System</h3>
+                    <p>Real ratings from real buyers. See exactly who you're buying from before you order.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚚</div>
+                    <h3>Direct Delivery</h3>
+                    <p>Fresh produce delivered directly from farm to your doorstep. No middlemen, no markup.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Fair Pricing</h3>
+                    <p>Farmers set their own prices. You pay what's fair, they earn what they deserve.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">How TrustLink Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Browse Products</h3>
+                    <p>Explore fresh produce from verified farmers in your area.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Check Trust Score</h3>
+                    <p>See seller ratings, reviews, and verification status before buying.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Order & Pay</h3>
+                    <p>Add to cart, checkout, and pay on delivery or via M-Pesa.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Rate & Review</h3>
+                    <p>Help build trust by rating your experience and leaving reviews.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products Section -->
+    <section class="featured-products">
+        <div class="container">
+            <h2 class="section-title">Fresh from Our Farmers</h2>
+            <div id="featuredProducts" class="products-grid">
+                <!-- Products loaded via JavaScript -->
+                <div class="loading">Loading products...</div>
+            </div>
+            <div class="text-center">
+                <a href="/products.html" class="btn btn-outline">View All Products</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>TrustLink</h3>
+                    <p>Verified marketplace for food and services in Kenya. Building trust in the informal economy.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="/products.html">Browse Products</a>
+                    <a href="/how-it-works.html">How It Works</a>
+                    <a href="/contact.html">Contact Us</a>
+                </div>
+                <div class="footer-section">
+                    <h4>For Farmers</h4>
+                    <a href="/register.html?role=farmer">Start Selling</a>
+                    <a href="/farmer-guide.html">Seller Guide</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>📞 0793472206</p>
+                    <p>✉️  chriswalles288@gmail.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 TrustLink. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/app.js"></script>
+    <script>
+        // Load featured products on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFeaturedProducts();
+            checkAuthStatus();
+        });
+
+        async function loadFeaturedProducts() {
+            try {
+                const response = await API.get('/products/get_products.php?per_page=4&sort=newest');
+                if (response.success && response.data) {
+                    const container = document.getElementById('featuredProducts');
+                    if (response.data.length === 0) {
+                        container.innerHTML = '<div class="no-products">No products yet. Check back soon!</div>';
+                        return;
+                    }
+                    
+                    container.innerHTML = response.data.map(product => `
+                        <div class="product-card" onclick="location.href='/product-detail.html?id=${product.id}'">
+                            <img src="${product.primary_image || '/assets/images/default/product-placeholder.jpg'}" 
+                                 alt="${product.name}" class="product-image">
+                            <div class="product-info">
+                                <h3>${escapeHtml(product.name)}</h3>
+                                <div class="product-price">KES ${product.price.toLocaleString()} / ${product.unit_abbr}</div>
+                                <div class="product-farmer">
+                                    <span class="trust-badge">${product.farmer.trust_badge.icon}</span>
+                                    ${escapeHtml(product.farmer.name)}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Failed to load products:', error);
+                document.getElementById('featuredProducts').innerHTML = '<div class="error">Failed to load products. Please try again.</div>';
+            }
+        }
+    </script>
+</body>
+</html>

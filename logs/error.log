@@ -1,0 +1,105 @@
+[2026-03-22 15:33:07] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-22 15:36:31] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-22 15:36:32] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-22 15:36:33] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-22 15:39:31] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-22 15:39:32] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-22 15:39:33] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-22 15:39:33] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-22 15:39:33] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-22 15:39:33] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-22 15:39:33] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-22 15:39:34] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-22 15:39:34] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-22 15:39:34] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-22 15:39:34] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-24 20:02:29] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-24 20:02:29] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-24 20:02:29] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-24 20:02:30] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-24 20:02:30] SQLSTATE[08006] [7] fe_sendauth: no password supplied in C:\xampp\htdocs\trustfiles\config\db.php:97
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\config\db.php(97): PDO->__construct('pgsql:host=loca...', 'postgres', '', Array)
+#1 C:\xampp\htdocs\trustfiles\config\db.php(57): TrustLink\Config\Database::createConnection()
+#2 C:\xampp\htdocs\trustfiles\api\products\get_products.php(89): TrustLink\Config\Database::getInstance()
+#3 {main}
+
+[2026-03-24 20:02:54] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-24 20:02:54] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-24 20:21:22] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-24 20:21:22] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-24 20:21:22] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-24 20:21:22] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-24 20:21:22] SQLSTATE[08006] [7] fe_sendauth: no password supplied in C:\xampp\htdocs\trustfiles\config\db.php:97
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\config\db.php(97): PDO->__construct('pgsql:host=loca...', 'postgres', '', Array)
+#1 C:\xampp\htdocs\trustfiles\config\db.php(57): TrustLink\Config\Database::createConnection()
+#2 C:\xampp\htdocs\trustfiles\api\products\get_products.php(89): TrustLink\Config\Database::getInstance()
+#3 {main}
+
+[2026-03-24 22:14:03] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-24 22:14:03] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-24 22:14:03] SQLSTATE[08006] [7] fe_sendauth: no password supplied in C:\xampp\htdocs\trustfiles\config\db.php:97
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\config\db.php(97): PDO->__construct('pgsql:host=loca...', 'postgres', '', Array)
+#1 C:\xampp\htdocs\trustfiles\config\db.php(57): TrustLink\Config\Database::createConnection()
+#2 C:\xampp\htdocs\trustfiles\api\products\get_products.php(89): TrustLink\Config\Database::getInstance()
+#3 {main}
+
+[2026-03-24 22:35:43] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-24 22:35:43] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-24 22:35:43] SQLSTATE[08006] [7] fe_sendauth: no password supplied in C:\xampp\htdocs\trustfiles\config\db.php:108
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\config\db.php(108): PDO->__construct('pgsql:host=loca...', 'postgres', '', Array)
+#1 C:\xampp\htdocs\trustfiles\config\db.php(68): TrustLink\Config\Database::createConnection()
+#2 C:\xampp\htdocs\trustfiles\api\products\get_products.php(89): TrustLink\Config\Database::getInstance()
+#3 {main}
+
+[2026-03-24 22:39:13] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-24 22:39:13] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-24 22:39:13] SQLSTATE[08006] [7] fe_sendauth: no password supplied in C:\xampp\htdocs\trustfiles\config\db.php:97
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\config\db.php(97): PDO->__construct('pgsql:host=loca...', 'postgres', '', Array)
+#1 C:\xampp\htdocs\trustfiles\config\db.php(57): TrustLink\Config\Database::createConnection()
+#2 C:\xampp\htdocs\trustfiles\api\products\get_products.php(89): TrustLink\Config\Database::getInstance()
+#3 {main}
+
+[2026-03-24 22:49:01] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-24 22:49:01] Database Error: SQLSTATE[08006] [7] fe_sendauth: no password supplied | DSN: pgsql:host=localhost;port=5432;dbname=trustlink;options='--client_encoding=utf8'
+[2026-03-25 10:39:38] SQLSTATE[42703]: Undefined column: 7 ERROR:  column p.images does not exist
+LINE 12:             p.images,
+                     ^ in C:\xampp\htdocs\trustfiles\api\cart\get_cart.php:73
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\get_cart.php(73): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-25 10:51:15] SQLSTATE[42703]: Undefined column: 7 ERROR:  column p.images does not exist
+LINE 12:             p.images,
+                     ^ in C:\xampp\htdocs\trustfiles\api\cart\get_cart.php:73
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\get_cart.php(73): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-25 10:56:17] SQLSTATE[42703]: Undefined column: 7 ERROR:  column p.images does not exist
+LINE 12:             p.images,
+                     ^ in C:\xampp\htdocs\trustfiles\api\cart\get_cart.php:73
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\get_cart.php(73): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-04-22 20:36:41] Database Error: SQLSTATE[08006] [7] could not translate host name "port=" to address: Unknown host | DSN: pgsql:host=;port=;dbname=;options='--client_encoding=utf8'
+[2026-04-22 20:36:41] SQLSTATE[08006] [7] could not translate host name "port=" to address: Unknown host in C:\xampp\htdocs\trustfiles\config\db.php:100
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\config\db.php(100): PDO->__construct('pgsql:host=;por...', 'postgres', 'Nasiuma.12?', Array)
+#1 C:\xampp\htdocs\trustfiles\config\db.php(57): TrustLink\Config\Database::createConnection()
+#2 C:\xampp\htdocs\trustfiles\api\products\get_products.php(89): TrustLink\Config\Database::getInstance()
+#3 {main}
+
+[2026-04-22 20:36:44] Database Error: SQLSTATE[08006] [7] could not translate host name "port=" to address: Unknown host | DSN: pgsql:host=;port=;dbname=;options='--client_encoding=utf8'
+[2026-04-22 20:36:44] SQLSTATE[08006] [7] could not translate host name "port=" to address: Unknown host in C:\xampp\htdocs\trustfiles\config\db.php:100
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\config\db.php(100): PDO->__construct('pgsql:host=;por...', 'postgres', 'Nasiuma.12?', Array)
+#1 C:\xampp\htdocs\trustfiles\config\db.php(57): TrustLink\Config\Database::createConnection()
+#2 C:\xampp\htdocs\trustfiles\api\products\get_products.php(89): TrustLink\Config\Database::getInstance()
+#3 {main}
+

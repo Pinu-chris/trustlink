@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Add Product API</title>
+    <style>
+        body { font-family: monospace; padding: 20px; }
+        .success { color: green; }
+        .error { color: red; }
+        pre { background: #f0f0f0; padding: 10px; overflow: auto; }
+    </style>
+</head>
+<body>
+    <h2>Test Add Product API</h2>
+    
+    <div>
+        <button onclick="testSession()">1. Test Session</button>
+        <button onclick="testAddProduct()">2. Test Add Product</button>
+        <button onclick="clearSession()">Clear Session</button>
+    </div>
+    
+    <div id="result" style="margin-top: 20px;">
+        <pre>Click a button to test...</pre>
+    </div>
+    
+    <script>
+        async function testSession() {
+            document.getElementById('result').innerHTML = '<pre>Checking session...</pre>';
+            
+            try {
+                const response = await fetch('/trustfiles/public/test_session_status.php');
+                const text = await response.text();
+                document.getElementById('result').innerHTML = '<pre>' + text + '</pre>';
+            } catch (error) {
+                document.getElementById('result').innerHTML = '<pre class="error">Error: ' + error.message + '</pre>';
+            }
+        }
+        
+        async function testAddProduct() {
+            const productData = {
+                name: 'Test Product ' + new Date().getTime(),
+                category: 'vegetables',
+                price: 100,
+                quantity: 10,
+                unit: 'kg',
+                description: 'Test product from debug page'
+            };
+            
+            document.getElementById('result').innerHTML = '<pre>Sending product data:\n' + JSON.stringify(productData, null, 2) + '\n\nWaiting for response...</pre>';
+            
+            try {
+                const response = await fetch('/trustfiles/api/products/add_product.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(productData)
+                });
+                
+                const data = await response.json();
+                document.getElementById('result').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                
+                if (data.success) {
+                    console.log('Product added successfully!');
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = '<pre class="error">Error: ' + error.message + '</pre>';
+            }
+        }
+        
+        async function clearSession() {
+            try {
+                const response = await fetch('/trustfiles/public/clear_session.php');
+                const text = await response.text();
+                document.getElementById('result').innerHTML = '<pre>' + text + '</pre>';
+                setTimeout(() => {
+                    window.location.href = '/trustfiles/public/login.php';
+                }, 2000);
+            } catch (error) {
+                document.getElementById('result').innerHTML = '<pre class="error">Error: ' + error.message + '</pre>';
+            }
+        }
+    </script>
+</body>
+</html>

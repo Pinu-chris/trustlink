@@ -1,0 +1,33 @@
+[2026-03-23 11:46:56] SQLSTATE[42703]: Undefined column: 7 ERROR:  column "location" of relation "users" does not exist
+LINE 1: ... (name, phone, password, role, verification_tier, location, ...
+                                                             ^ in C:\xampp\htdocs\trustfiles\config\db.php:144
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\config\db.php(144): PDOStatement->execute(Array)
+#1 C:\xampp\htdocs\trustfiles\config\db.php(193): TrustLink\Config\Database::query('INSERT INTO use...', Array)
+#2 C:\xampp\htdocs\trustfiles\api\auth\register.php(189): TrustLink\Config\Database::insert('users', Array)
+#3 {main}
+
+[2026-03-23 12:03:47] SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  invalid input syntax for type boolean: ""
+CONTEXT:  unnamed portal parameter $8 = '' in C:\xampp\htdocs\trustfiles\config\db.php:144
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\config\db.php(144): PDOStatement->execute(Array)
+#1 C:\xampp\htdocs\trustfiles\config\db.php(193): TrustLink\Config\Database::query('INSERT INTO use...', Array)
+#2 C:\xampp\htdocs\trustfiles\api\auth\register.php(189): TrustLink\Config\Database::insert('users', Array)
+#3 {main}
+
+[2026-03-23 12:06:07] SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  invalid input syntax for type boolean: ""
+CONTEXT:  unnamed portal parameter $8 = '' in C:\xampp\htdocs\trustfiles\config\db.php:144
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\config\db.php(144): PDOStatement->execute(Array)
+#1 C:\xampp\htdocs\trustfiles\config\db.php(193): TrustLink\Config\Database::query('INSERT INTO use...', Array)
+#2 C:\xampp\htdocs\trustfiles\api\auth\register.php(189): TrustLink\Config\Database::insert('users', Array)
+#3 {main}
+
+[2026-03-23 12:09:01] SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  invalid input syntax for type boolean: ""
+CONTEXT:  unnamed portal parameter $8 = '' in C:\xampp\htdocs\trustfiles\config\db.php:144
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\config\db.php(144): PDOStatement->execute(Array)
+#1 C:\xampp\htdocs\trustfiles\config\db.php(193): TrustLink\Config\Database::query('INSERT INTO use...', Array)
+#2 C:\xampp\htdocs\trustfiles\api\auth\register.php(189): TrustLink\Config\Database::insert('users', Array)
+#3 {main}
+

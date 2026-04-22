@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - TrustLink</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="/">
+                    <span class="logo-icon">🌾</span>
+                    <span class="logo-text">TrustLink</span>
+                </a>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="products.html" class="nav-link">Browse Products</a>
+                <div id="userMenu">
+                    <div class="dropdown">
+                        <button class="dropdown-btn" id="userMenuBtn">
+                            <img id="userAvatar" src="/assets/images/default/avatar.png" alt="Avatar" class="avatar-small">
+                            <span id="userName">Loading...</span>
+                            <span class="dropdown-icon">▼</span>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="dashboard.html">Dashboard</a>
+                            <a href="profile.html">Profile</a>
+                            <a href="my-orders.html" id="buyerOrderLink">My Orders</a>
+                            <a href="received-orders.html" id="farmerOrderLink" style="display:none;">Received Orders</a>
+                            <a href="add-product.html" id="addProductLink" style="display:none;">Add Product</a>
+                            <a href="admin.html" id="adminLink" style="display:none;">Admin Panel</a>
+                            <hr>
+                            <a href="#" id="logoutBtn">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard-header">
+            <h1>Welcome, <span id="welcomeName">User</span></h1>
+            <div id="trustBadge" class="trust-badge-large"></div>
+        </div>
+        
+        <div id="dashboardContent">
+            <div class="loading">Loading dashboard...</div>
+        </div>
+    </div>
+
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script>
+        let currentUser = null;
+        
+        async function loadDashboard() {
+            try {
+                const response = await API.get('../api/users/get_profile.php');
+                if (response.success && response.data) {
+                    currentUser = response.data;
+                    updateUI();
+                    renderDashboard();
+                } else {
+                    window.location.href = 'login.html';
+                }
+            } catch (error) {
+                console.error('Failed to load profile:', error);
+                window.location.href = 'login.html';
+            }
+        }
+        
+        function updateUI() {
+            document.getElementById('welcomeName').textContent = currentUser.name.split(' ')[0];
+            
+            const trustBadge = currentUser.trust_badge;
+            document.getElementById('trustBadge').innerHTML = `
+                <span class="trust-score">${currentUser.trust_score.toFixed(1)} ★</span>
+                <span class="badge ${trustBadge.label.toLowerCase().replace(/\s/g, '-')}">${trustBadge.icon} ${trustBadge.label}</span>
+            `;
+        }
+        
+        function renderDashboard() {
+            const container = document.getElementById('dashboardContent');
+            
+            if (currentUser.role === 'farmer') {
+                renderFarmerDashboard(container);
+            } else if (currentUser.role === 'buyer') {
+                renderBuyerDashboard(container);
+            } else if (currentUser.role === 'admin') {
+                renderAdminDashboard(container);
+            } else {
+                renderServiceDashboard(container);
+            }
+        }
+        
+        async function renderFarmerDashboard(container) {
+            // Fetch farmer stats
+            const stats = currentUser.statistics || {};
+            
+            container.innerHTML = `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📦</div>
+                        <div class="stat-value">${stats.active_products || 0}</div>
+                        <div class="stat-label">Active Products</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🛒</div>
+                        <div class="stat-value">${stats.total_orders || 0}</div>
+                        <div class="stat-label">Total Orders</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-value">${stats.completed_orders || 0}</div>
+                        <div class="stat-label">Completed Orders</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-value">KES ${(stats.total_earnings || 0).toLocaleString()}</div>
+                        <div class="stat-label">Total Earnings</div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-actions">
+                    <h3>Quick Actions</h3>
+                    <div class="action-buttons">
+                        <a href="add-product.html" class="btn btn-primary">➕ Add New Product</a>
+                        <a href="products.html?my_products=1" class="btn btn-outline">📋 Manage Products</a>
+                        <a href="received-orders.html" class="btn btn-outline">📦 View Orders</a>
+                    </div>
+                </div>
+                
+                <div class="recent-section">
+                    <h3>Recent Orders</h3>
+                    <div id="recentOrders" class="orders-list">
+                        <div class="loading">Loading orders...</div>
+                    </div>
+                </div>
+            `;
+            
+            // Load recent orders
+            try {
+                const ordersRes = await API.get('/orders/get_orders.php', { role: 'farmer', per_page: 5 });
+                if (ordersRes.success && ordersRes.data) {
+                    const ordersContainer = document.getElementById('recentOrders');
+                    if (ordersRes.data.length === 0) {
+                        ordersContainer.innerHTML = '<div class="empty-state">No orders yet</div>';
+                    } else {
+                        ordersContainer.innerHTML = ordersRes.data.map(order => `
+                            <div class="order-item">
+                                <div class="order-info">
+                                    <span class="order-code">${escapeHtml(order.order_code)}</span>
+                                    <span class="order-status status-${order.status}">${order.status_display}</span>
+                                </div>
+                                <div class="order-details">
+                                    <span>Buyer: ${escapeHtml(order.buyer.name)}</span>
+                                    <span>Items: ${order.item_count}</span>
+                                    <span>KES ${order.total.toLocaleString()}</span>
+                                </div>
+                                <a href="/order-detail.html?id=${order.id}" class="btn btn-sm">View Details</a>
+                            </div>
+                        `).join('');
+                    }
+                }
+            } catch (error) {
+                document.getElementById('recentOrders').innerHTML = '<div class="error">Failed to load orders</div>';
+            }
+        }
+        
+        async function renderBuyerDashboard(container) {
+            const stats = currentUser.statistics || {};
+            
+            container.innerHTML = `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🛒</div>
+                        <div class="stat-value">${stats.total_orders || 0}</div>
+                        <div class="stat-label">Total Orders</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-value">${stats.completed_orders || 0}</div>
+                        <div class="stat-label">Completed Orders</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-value">${stats.pending_orders || 0}</div>
+                        <div class="stat-label">Pending Orders</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-value">KES ${(stats.total_spent || 0).toLocaleString()}</div>
+                        <div class="stat-label">Total Spent</div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-actions">
+                    <h3>Quick Actions</h3>
+                    <div class="action-buttons">
+                        <a href="/products.html" class="btn btn-primary">🛍️ Browse Products</a>
+                        <a href="/cart.html" class="btn btn-outline">🛒 View Cart</a>
+                        <a href="/my-orders.html" class="btn btn-outline">📦 My Orders</a>
+                    </div>
+                </div>
+                
+                <div class="recent-section">
+                    <h3>Recent Orders</h3>
+                    <div id="recentOrders" class="orders-list">
+                        <div class="loading">Loading orders...</div>
+                    </div>
+                </div>
+            `;
+            
+            // Load recent orders
+            try {
+                const ordersRes = await API.get('/orders/get_orders.php', { role: 'buyer', per_page: 5 });
+                if (ordersRes.success && ordersRes.data) {
+                    const ordersContainer = document.getElementById('recentOrders');
+                    if (ordersRes.data.length === 0) {
+                        ordersContainer.innerHTML = '<div class="empty-state">No orders yet. Start shopping!</div>';
+                    } else {
+                        ordersContainer.innerHTML = ordersRes.data.map(order => `
+                            <div class="order-item">
+                                <div class="order-info">
+                                    <span class="order-code">${escapeHtml(order.order_code)}</span>
+                                    <span class="order-status status-${order.status}">${order.status_display}</span>
+                                </div>
+                                <div class="order-details">
+                                    <span>Farmer: ${escapeHtml(order.farmer.name)}</span>
+                                    <span>Items: ${order.item_count}</span>
+                                    <span>KES ${order.total.toLocaleString()}</span>
+                                </div>
+                                <a href="/order-detail.html?id=${order.id}" class="btn btn-sm">View Details</a>
+                            </div>
+                        `).join('');
+                    }
+                }
+            } catch (error) {
+                document.getElementById('recentOrders').innerHTML = '<div class="error">Failed to load orders</div>';
+            }
+        }
+        
+        function renderAdminDashboard(container) {
+            container.innerHTML = `
+                <div class="dashboard-actions">
+                    <h3>Admin Panel</h3>
+                    <div class="action-buttons">
+                        <a href="/admin.html" class="btn btn-primary">👑 Go to Admin Panel</a>
+                        <a href="/admin.html?tab=users" class="btn btn-outline">👥 Manage Users</a>
+                        <a href="/admin.html?tab=reports" class="btn btn-outline">📊 View Reports</a>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderServiceDashboard(container) {
+            container.innerHTML = `
+                <div class="dashboard-actions">
+                    <h3>Service Provider Dashboard</h3>
+                    <div class="action-buttons">
+                        <a href="/profile.html" class="btn btn-primary">✏️ Update Profile</a>
+                        <a href="/services.html" class="btn btn-outline">🔧 Manage Services</a>
+                    </div>
+                </div>
+                <div class="recent-section">
+                    <h3>Coming Soon</h3>
+                    <p>Service provider features are coming soon. Stay tuned!</p>
+                </div>
+            `;
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDashboard();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+[2026-03-23 22:38:34] SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  invalid input syntax for type boolean: "active"
+LINE 5:         ) VALUES ($1, $2, $3, $4, $5, $6, $7, 'active', NOW(...
+                                                      ^ in C:\xampp\htdocs\trustfiles\api\products\add_product.php:190
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\products\add_product.php(190): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-23 22:42:59] SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  invalid input syntax for type boolean: "active"
+LINE 5:         ) VALUES ($1, $2, $3, $4, $5, $6, $7, 'active', NOW(...
+                                                      ^ in C:\xampp\htdocs\trustfiles\api\products\add_product.php:190
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\products\add_product.php(190): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-23 22:45:15] SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  invalid input syntax for type boolean: "active"
+LINE 5:         ) VALUES ($1, $2, $3, $4, $5, $6, $7, 'active', NOW(...
+                                                      ^ in C:\xampp\htdocs\trustfiles\api\products\add_product.php:190
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\products\add_product.php(190): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-23 22:45:16] SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  invalid input syntax for type boolean: "active"
+LINE 5:         ) VALUES ($1, $2, $3, $4, $5, $6, $7, 'active', NOW(...
+                                                      ^ in C:\xampp\htdocs\trustfiles\api\products\add_product.php:190
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\products\add_product.php(190): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-23 22:45:24] SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  invalid input syntax for type boolean: "active"
+LINE 5:         ) VALUES ($1, $2, $3, $4, $5, $6, $7, 'active', NOW(...
+                                                      ^ in C:\xampp\htdocs\trustfiles\api\products\add_product.php:190
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\products\add_product.php(190): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-23 22:45:32] SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  invalid input syntax for type boolean: "active"
+LINE 5:         ) VALUES ($1, $2, $3, $4, $5, $6, $7, 'active', NOW(...
+                                                      ^ in C:\xampp\htdocs\trustfiles\api\products\add_product.php:190
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\products\add_product.php(190): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-23 22:45:33] SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  invalid input syntax for type boolean: "active"
+LINE 5:         ) VALUES ($1, $2, $3, $4, $5, $6, $7, 'active', NOW(...
+                                                      ^ in C:\xampp\htdocs\trustfiles\api\products\add_product.php:190
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\products\add_product.php(190): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-23 22:45:34] SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  invalid input syntax for type boolean: "active"
+LINE 5:         ) VALUES ($1, $2, $3, $4, $5, $6, $7, 'active', NOW(...
+                                                      ^ in C:\xampp\htdocs\trustfiles\api\products\add_product.php:190
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\products\add_product.php(190): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-23 22:45:34] SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  invalid input syntax for type boolean: "active"
+LINE 5:         ) VALUES ($1, $2, $3, $4, $5, $6, $7, 'active', NOW(...
+                                                      ^ in C:\xampp\htdocs\trustfiles\api\products\add_product.php:190
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\products\add_product.php(190): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-23 22:45:34] SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  invalid input syntax for type boolean: "active"
+LINE 5:         ) VALUES ($1, $2, $3, $4, $5, $6, $7, 'active', NOW(...
+                                                      ^ in C:\xampp\htdocs\trustfiles\api\products\add_product.php:190
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\products\add_product.php(190): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-23 22:45:35] SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  invalid input syntax for type boolean: "active"
+LINE 5:         ) VALUES ($1, $2, $3, $4, $5, $6, $7, 'active', NOW(...
+                                                      ^ in C:\xampp\htdocs\trustfiles\api\products\add_product.php:190
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\products\add_product.php(190): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-24 13:31:14] SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  invalid input syntax for type boolean: ""
+CONTEXT:  unnamed portal parameter $3 = '' in C:\xampp\htdocs\trustfiles\api\products\upload_images.php:231
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\products\upload_images.php(231): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-24 13:31:41] SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  invalid input syntax for type boolean: ""
+CONTEXT:  unnamed portal parameter $3 = '' in C:\xampp\htdocs\trustfiles\api\products\upload_images.php:231
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\products\upload_images.php(231): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-24 13:35:12] SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  invalid input syntax for type boolean: ""
+CONTEXT:  unnamed portal parameter $3 = '' in C:\xampp\htdocs\trustfiles\api\products\upload_images.php:232
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\products\upload_images.php(232): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-04-22 20:12:16] SQLSTATE[08006] [7] could not translate host name "port=" to address: Unknown host in C:\xampp\htdocs\trustfiles\config\db.php:100
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\config\db.php(100): PDO->__construct('pgsql:host=;por...', 'postgres', 'Nasiuma.12?', Array)
+#1 C:\xampp\htdocs\trustfiles\config\db.php(57): TrustLink\Config\Database::createConnection()
+#2 C:\xampp\htdocs\trustfiles\api\products\get_products.php(89): TrustLink\Config\Database::getInstance()
+#3 {main}
+
+[2026-04-22 20:19:14] SQLSTATE[08006] [7] could not translate host name "port=" to address: Unknown host in C:\xampp\htdocs\trustfiles\config\db.php:100
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\config\db.php(100): PDO->__construct('pgsql:host=;por...', 'postgres', 'Nasiuma.12?', Array)
+#1 C:\xampp\htdocs\trustfiles\config\db.php(57): TrustLink\Config\Database::createConnection()
+#2 C:\xampp\htdocs\trustfiles\api\products\get_products.php(89): TrustLink\Config\Database::getInstance()
+#3 {main}
+
+[2026-04-22 20:19:19] SQLSTATE[08006] [7] could not translate host name "port=" to address: Unknown host in C:\xampp\htdocs\trustfiles\config\db.php:100
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\config\db.php(100): PDO->__construct('pgsql:host=;por...', 'postgres', 'Nasiuma.12?', Array)
+#1 C:\xampp\htdocs\trustfiles\config\db.php(57): TrustLink\Config\Database::createConnection()
+#2 C:\xampp\htdocs\trustfiles\api\products\get_products.php(89): TrustLink\Config\Database::getInstance()
+#3 {main}
+
+[2026-04-22 20:36:59] SQLSTATE[08006] [7] could not translate host name "port=" to address: Unknown host in C:\xampp\htdocs\trustfiles\config\db.php:100
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\config\db.php(100): PDO->__construct('pgsql:host=;por...', 'postgres', 'Nasiuma.12?', Array)
+#1 C:\xampp\htdocs\trustfiles\config\db.php(57): TrustLink\Config\Database::createConnection()
+#2 C:\xampp\htdocs\trustfiles\api\products\get_products.php(89): TrustLink\Config\Database::getInstance()
+#3 {main}
+
+[2026-04-22 20:37:03] SQLSTATE[08006] [7] could not translate host name "port=" to address: Unknown host in C:\xampp\htdocs\trustfiles\config\db.php:100
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\config\db.php(100): PDO->__construct('pgsql:host=;por...', 'postgres', 'Nasiuma.12?', Array)
+#1 C:\xampp\htdocs\trustfiles\config\db.php(57): TrustLink\Config\Database::createConnection()
+#2 C:\xampp\htdocs\trustfiles\api\products\get_products.php(89): TrustLink\Config\Database::getInstance()
+#3 {main}
+

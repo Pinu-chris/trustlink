@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - TrustLink</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="/">
+                    <span class="logo-icon">🌾</span>
+                    <span class="logo-text">TrustLink</span>
+                </a>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="products.php" class="nav-link">Browse Products</a>
+                <div id="authLinks">
+                    <a href="login.html" class="btn btn-outline">Login</a>
+                    <a href="register.html" class="btn btn-primary">Sign Up</a>
+                </div>
+                <div id="userMenu" style="display: none;">
+                    <div class="dropdown">
+                        <button class="dropdown-btn" id="userMenuBtn">
+                            <img id="userAvatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='%23999'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Avatar" class="avatar-small">
+                            <span id="userName">Loading...</span>
+                            <span class="dropdown-icon">▼</span>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="dashboard.php">Dashboard</a>
+                            <a href="profile.html">Profile</a>
+                            <a href="cart.php">Cart</a>
+                            <a href="my-orders.php">My Orders</a>
+                            <a href="add-product.php" id="addProductLink" style="display:none;">Add Product</a>
+                            <hr>
+                            <a href="#" id="logoutBtn">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="productContent" class="product-detail-container">
+            <div class="loading">Loading product details...</div>
+        </div>
+    </div>
+
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/app.js"></script>
+    <script>
+        // Helper function to render stars (globally available)
+        window.renderStars = function(rating) {
+            const fullStars = Math.floor(rating);
+            const halfStar = rating % 1 >= 0.5;
+            const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+            let html = '';
+            for (let i = 0; i < fullStars; i++) html += '⭐';
+            if (halfStar) html += '½';
+            for (let i = 0; i < emptyStars; i++) html += '☆';
+            return html;
+        };
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+        
+        if (!productId) {
+            window.location.href = 'products.html';
+        }
+        
+        let quantity = 1;
+        
+        async function loadProduct() {
+            try {
+                const response = await API.get('/products/get_single_product.php', { id: productId });
+                if (response.success && response.data) {
+                    renderProduct(response.data);
+                } else {
+                    document.getElementById('productContent').innerHTML = '<div class="error">Product not found</div>';
+                }
+            } catch (error) {
+                console.error('Failed to load product:', error);
+                document.getElementById('productContent').innerHTML = '<div class="error">Failed to load product</div>';
+            }
+        }
+        
+        function renderProduct(product) {
+            const container = document.getElementById('productContent');
+            const placeholder = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 24 24' fill='%23999'%3E%3Crect width='24' height='24' fill='%23ccc'/%3E%3C/svg%3E";
+            const mainImage = product.primary_image || placeholder;
+            
+            // Build gallery if there are multiple images
+            let galleryHtml = '';
+            if (product.images && product.images.length > 0) {
+                const images = product.images;
+                galleryHtml = `
+                    <div class="product-gallery">
+                        <img id="mainImage" src="${images[0].url || images[0]}" alt="${escapeHtml(product.name)}" class="main-image">
+                        <div class="thumbnail-gallery">
+                            ${images.map((img, idx) => `
+                                <img src="${img.url || img}" alt="Thumbnail" class="thumbnail ${idx === 0 ? 'active' : ''}" 
+                                     onclick="changeImage('${img.url || img}', ${idx})">
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                galleryHtml = `
+                    <div class="product-gallery">
+                        <img src="${mainImage}" alt="${escapeHtml(product.name)}" class="main-image">
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = `
+                <div class="product-detail">
+                    ${galleryHtml}
+                    
+                    <div class="product-info-detail">
+                        <h1>${escapeHtml(product.name)}</h1>
+                        <div class="product-meta">
+                            <span class="price">KES ${product.price.toLocaleString()} / ${product.unit_abbr}</span>
+                            <div class="stock ${product.quantity > 0 ? 'in-stock' : 'out-of-stock'}">
+                                ${product.quantity > 0 ? `✓ ${product.quantity} ${product.unit_abbr} available` : '✗ Out of stock'}
+                            </div>
+                        </div>
+                        
+                        <div class="seller-info">
+                            <div class="seller-avatar">
+                                <img src="${product.farmer.profile_photo || placeholder}" alt="Farmer">
+                            </div>
+                            <div class="seller-details">
+                                <h4>${escapeHtml(product.farmer.name)}</h4>
+                                <div class="trust-info">
+                                    <span class="trust-badge-large">${product.farmer.trust_badge.icon}</span>
+                                    <span class="trust-score">${product.farmer.trust_score.toFixed(1)} ★</span>
+                                    <span class="verification-badge badge-${product.farmer.verification_tier}">
+                                        ${product.farmer.verification_display || product.farmer.verification_tier}
+                                    </span>
+                                </div>
+                                <div class="seller-location">📍 ${product.farmer.location?.county || 'Kenya'}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="product-description">
+                            <h3>Description</h3>
+                            <p>${escapeHtml(product.description) || 'No description provided.'}</p>
+                        </div>
+                        
+                        <div class="quantity-selector">
+                            <label>Quantity:</label>
+                            <button class="qty-btn" onclick="updateQuantity(-1)">-</button>
+                            <input type="number" id="quantity" value="1" min="1" max="${product.quantity}" onchange="validateQuantity()">
+                            <button class="qty-btn" onclick="updateQuantity(1)">+</button>
+                            <span class="unit">${product.unit_abbr}</span>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn btn-primary btn-large" onclick="addToCart()" ${product.quantity <= 0 ? 'disabled' : ''}>
+                                🛒 Add to Cart
+                            </button>
+                            <button class="btn btn-outline btn-large" onclick="buyNow()" ${product.quantity <= 0 ? 'disabled' : ''}>
+                                Buy Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reviews-section">
+                    <h3>Customer Reviews</h3>
+                    <div id="reviewsContainer" class="reviews-list">
+                        <div class="loading">Loading reviews...</div>
+                    </div>
+                </div>
+                
+                <div class="related-products">
+                    <h3>You May Also Like</h3>
+                    <div id="relatedProducts" class="products-grid">
+                        <div class="loading">Loading recommendations...</div>
+                    </div>
+                </div>
+            `;
+            
+            // Load product reviews
+            loadProductReviews(product.id);
+            
+            // Load related products (if provided by API)
+            if (product.related_products) {
+                renderRelatedProducts(product.related_products);
+            }
+        }
+        
+        function changeImage(url, idx) {
+            document.getElementById('mainImage').src = url;
+            document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
+                thumb.classList.toggle('active', i === idx);
+            });
+        }
+        
+        function updateQuantity(delta) {
+            const input = document.getElementById('quantity');
+            let newVal = parseInt(input.value) + delta;
+            const max = parseInt(input.max) || 999;
+            newVal = Math.max(1, Math.min(newVal, max));
+            input.value = newVal;
+            quantity = newVal;
+        }
+        
+        function validateQuantity() {
+            const input = document.getElementById('quantity');
+            let val = parseInt(input.value);
+            const max = parseInt(input.max) || 999;
+            if (isNaN(val) || val < 1) val = 1;
+            if (val > max) val = max;
+            input.value = val;
+            quantity = val;
+        }
+        
+        async function addToCart() {
+            if (!App.isLoggedIn) {
+                if (confirm('Please login to add items to cart. Go to login page?')) {
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
+            
+            const qty = parseInt(document.getElementById('quantity').value);
+            
+            try {
+                const response = await API.post('/cart/add_to_cart.php', { product_id: productId, quantity: qty });
+                if (response.success) {
+                    showToast('Product added to cart!', 'success');
+                }
+            } catch (error) {
+                showToast(error.message || 'Failed to add to cart', 'error');
+            }
+        }
+        
+        async function buyNow() {
+            if (!App.isLoggedIn) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const qty = parseInt(document.getElementById('quantity').value);
+            
+            try {
+                await API.post('/cart/add_to_cart.php', { product_id: productId, quantity: qty });
+                window.location.href = 'cart.php';
+            } catch (error) {
+                showToast(error.message || 'Failed to add to cart', 'error');
+            }
+        }
+
+        // Load reviews for this specific product
+        async function loadProductReviews(productId) {
+            const container = document.getElementById('reviewsContainer');
+            if (!container) return;
+            
+            try {
+                const response = await API.get('/reviews/get_product_reviews.php', { product_id: productId });
+                if (response.success && response.data) {
+                    renderReviews(response.data);
+                } else {
+                    container.innerHTML = '<div class="empty-state">No reviews yet. Be the first to review!</div>';
+                }
+            } catch (error) {
+                console.error('Failed to load reviews:', error);
+                container.innerHTML = '<div class="error">Failed to load reviews</div>';
+            }
+        }
+        
+        function renderReviews(data) {
+            const container = document.getElementById('reviewsContainer');
+            if (!container) return;
+            
+            // If data has a rating summary, display it (optional)
+            let summaryHtml = '';
+            if (data.rating_summary) {
+                summaryHtml = `
+                    <div class="rating-summary">
+                        <div class="average-rating">
+                            <span class="big-rating">${data.rating_summary.average.toFixed(1)}</span>
+                            <span class="stars">${renderStars(data.rating_summary.average)}</span>
+                            <span class="review-count">(${data.rating_summary.total} reviews)</span>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (!data.reviews || data.reviews.length === 0) {
+                container.innerHTML = summaryHtml + '<div class="empty-state">No reviews yet. Be the first to review!</div>';
+                return;
+            }
+            
+            const reviewsHtml = data.reviews.map(review => `
+                <div class="review-item">
+                    <div class="review-header">
+                        <strong>${escapeHtml(review.buyer_name || 'Anonymous')}</strong>
+                        <span class="review-stars">${renderStars(review.rating)}</span>
+                        <span class="review-date">${review.time_ago || new Date(review.created_at).toLocaleDateString()}</span>
+                    </div>
+                    <div class="review-comment">${escapeHtml(review.comment)}</div>
+                    ${review.farmer_reply ? `
+                        <div class="farmer-reply">
+                            <strong>Seller's response:</strong>
+                            <p>${escapeHtml(review.farmer_reply)}</p>
+                            <small>Replied on ${new Date(review.farmer_replied_at).toLocaleDateString()}</small>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+            
+            container.innerHTML = summaryHtml + `<div class="all-reviews">${reviewsHtml}</div>`;
+        }
+        
+        function renderRelatedProducts(products) {
+            const container = document.getElementById('relatedProducts');
+            if (!container) return;
+            
+            if (!products || products.length === 0) {
+                container.innerHTML = '<div class="empty-state">No related products found.</div>';
+                return;
+            }
+            
+            const placeholder = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 24 24' fill='%23999'%3E%3Crect width='24' height='24' fill='%23ccc'/%3E%3C/svg%3E";
+            
+            container.innerHTML = products.map(product => `
+                <div class="product-card" onclick="location.href='product-detail.html?id=${product.id}'">
+                    <img src="${product.primary_image || placeholder}" 
+                         alt="${escapeHtml(product.name)}" class="product-image">
+                    <div class="product-info">
+                        <h3>${escapeHtml(product.name)}</h3>
+                        <div class="product-price">KES ${product.price.toLocaleString()} / ${product.unit_abbr}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', loadProduct);
+    </script>
+</body>
+</html>

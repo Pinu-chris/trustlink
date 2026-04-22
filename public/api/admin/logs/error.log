@@ -1,0 +1,14 @@
+[2026-03-26 10:47:38] SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  invalid input value for enum notification_type: "admin_action"
+LINE 3:         VALUES ($1, $2, $3, 'admin_action', NOW())
+                                    ^ in C:\xampp\htdocs\trustfiles\api\admin\verify_user.php:162
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\admin\verify_user.php(162): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-26 12:51:41] SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  invalid input value for enum notification_type: "admin_action"
+LINE 3:         VALUES ($1, $2, $3, 'admin_action', NOW())
+                                    ^ in C:\xampp\htdocs\trustfiles\api\admin\verify_user.php:162
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\admin\verify_user.php(162): PDOStatement->execute(Array)
+#1 {main}
+

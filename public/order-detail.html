@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details - TrustLink</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="/">
+                    <span class="logo-icon">🌾</span>
+                    <span class="logo-text">TrustLink</span>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="products.php" class="nav-link">Browse Products</a>
+                <a href="dashboard.php" class="nav-link">Dashboard</a>
+                <a href="cart.php" class="nav-link">Cart</a>
+                <div class="user-menu">
+                    <span id="userName">Loading...</span>
+                    <a href="#" id="logoutBtn">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="orderDetail">
+            <div class="loading">Loading order details...</div>
+        </div>
+    </div>
+
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/app.js"></script>
+    <script>
+        // Get order ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('id');
+
+        if (!orderId) {
+            window.location.href = 'my-orders.php';
+        }
+
+        let currentUser = null;
+
+        async function loadOrder() {
+            try {
+                const response = await API.get(`/orders/get_order_details.php?id=${orderId}`);
+                if (response.success && response.data) {
+                    renderOrder(response.data);
+                } else {
+                    document.getElementById('orderDetail').innerHTML = '<div class="error">Order not found.</div>';
+                }
+            } catch (error) {
+                console.error('Failed to load order:', error);
+                document.getElementById('orderDetail').innerHTML = '<div class="error">Failed to load order details.</div>';
+            }
+        }
+
+        function renderOrder(order) {
+            const container = document.getElementById('orderDetail');
+            const isBuyer = currentUser && currentUser.role === 'buyer';
+
+            container.innerHTML = `
+                <div class="order-detail-card">
+                    <div class="order-header">
+                        <h1>Order #${escapeHtml(order.order_code)}</h1>
+                        <span class="order-status status-${order.status}">${order.status_display}</span>
+                    </div>
+                    
+                    <div class="order-meta">
+                        <p><strong>Placed on:</strong> ${new Date(order.created_at).toLocaleString()}</p>
+                        <p><strong>Delivery Location:</strong> ${escapeHtml(order.location || 'Not specified')}</p>
+                        ${order.instructions ? `<p><strong>Instructions:</strong> ${escapeHtml(order.instructions)}</p>` : ''}
+                    </div>
+
+                    <div class="order-items">
+                        <h3>Order Items</h3>
+                        ${order.items.map(item => `
+                            <div class="order-item">
+                                <img src="${item.image_url || '../assets/images/default/product-placeholder.jpg'}" 
+                                     alt="${escapeHtml(item.product_name)}" class="order-item-image"
+                                     onerror="this.src='../assets/images/default/product-placeholder.jpg'">
+                                <div class="order-item-details">
+                                    <h4>${escapeHtml(item.product_name)}</h4>
+                                    <p>Quantity: ${item.quantity} × KES ${item.price.toLocaleString()} = KES ${item.subtotal.toLocaleString()}</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="order-summary">
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span>KES ${order.subtotal.toLocaleString()}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Delivery Fee:</span>
+                            <span>KES ${order.delivery_fee.toLocaleString()}</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total:</span>
+                            <span>KES ${order.total.toLocaleString()}</span>
+                        </div>
+                    </div>
+
+                    <div class="farmer-info">
+                        <h3>Seller</h3>
+                        <p>${escapeHtml(order.farmer.name)}</p>
+                        <p>Phone: ${escapeHtml(order.farmer.phone)}</p>
+                        <p>Trust Score: ${order.farmer.trust_score}</p>
+                    </div>
+
+                    ${isBuyer && order.status === 'completed' && !order.review_submitted ? `
+                        <div class="review-section">
+                            <h3>Leave a Review</h3>
+                            <form id="reviewForm">
+                                <div class="form-group">
+                                    <label>Rating (1-5)</label>
+                                    <select id="rating" required>
+                                        <option value="">Select rating</option>
+                                        <option value="5">5 - Excellent</option>
+                                        <option value="4">4 - Good</option>
+                                        <option value="3">3 - Average</option>
+                                        <option value="2">2 - Poor</option>
+                                        <option value="1">1 - Terrible</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Comment</label>
+                                    <textarea id="reviewComment" rows="3" placeholder="Share your experience..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit Review</button>
+                            </form>
+                        </div>
+                    ` : (order.review_submitted ? '<div class="alert alert-success">You already reviewed this order.</div>' : '')}
+                </div>
+            `;
+
+            if (isBuyer && order.status === 'completed' && !order.review_submitted) {
+                document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const rating = parseInt(document.getElementById('rating').value);
+                    const comment = document.getElementById('reviewComment').value.trim();
+                    if (!rating) {
+                        alert('Please select a rating');
+                        return;
+                    }
+                    try {
+                        const response = await API.post('/reviews/add_review.php', {
+                            order_id: orderId,
+                            farmer_id: order.farmer.id,
+                            rating: rating,
+                            comment: comment
+                        });
+                        if (response.success) {
+                            alert('Review submitted successfully!');
+                            loadOrder(); // reload to hide form
+                        } else {
+                            alert(response.message || 'Failed to submit review');
+                        }
+                    } catch (error) {
+                        console.error('Review error:', error);
+                        alert('Failed to submit review');
+                    }
+                });
+            }
+        }
+
+        // Load user profile first
+        async function init() {
+            try {
+                const profile = await API.get('/users/get_profile.php');
+                if (profile.success) {
+                    currentUser = profile.data;
+                    document.getElementById('userName').textContent = currentUser.name;
+                }
+            } catch (e) {
+                console.warn('Profile load failed', e);
+            }
+            loadOrder();
+        }
+
+        // Logout
+        document.getElementById('logoutBtn')?.addEventListener('click', async (e) => {
+            e.preventDefault();
+            await API.post('/auth/logout.php');
+            window.location.href = 'login.html';
+        });
+
+        init();
+    </script>
+</body>
+</html>

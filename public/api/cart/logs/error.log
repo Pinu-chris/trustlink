@@ -1,0 +1,147 @@
+[2026-03-25 09:41:40] SQLSTATE[42702]: Ambiguous column: 7 ERROR:  column reference "quantity" is ambiguous
+LINE 4:             SUM(quantity * price) as total
+                        ^ in C:\xampp\htdocs\trustfiles\api\cart\add_to_cart.php:197
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\add_to_cart.php(197): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-25 09:41:42] SQLSTATE[42702]: Ambiguous column: 7 ERROR:  column reference "quantity" is ambiguous
+LINE 4:             SUM(quantity * price) as total
+                        ^ in C:\xampp\htdocs\trustfiles\api\cart\add_to_cart.php:197
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\add_to_cart.php(197): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-25 09:41:43] SQLSTATE[42702]: Ambiguous column: 7 ERROR:  column reference "quantity" is ambiguous
+LINE 4:             SUM(quantity * price) as total
+                        ^ in C:\xampp\htdocs\trustfiles\api\cart\add_to_cart.php:197
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\add_to_cart.php(197): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-25 09:41:44] SQLSTATE[42702]: Ambiguous column: 7 ERROR:  column reference "quantity" is ambiguous
+LINE 4:             SUM(quantity * price) as total
+                        ^ in C:\xampp\htdocs\trustfiles\api\cart\add_to_cart.php:197
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\add_to_cart.php(197): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-25 10:29:10] SQLSTATE[42702]: Ambiguous column: 7 ERROR:  column reference "quantity" is ambiguous
+LINE 4:             SUM(quantity * price) as total
+                        ^ in C:\xampp\htdocs\trustfiles\api\cart\add_to_cart.php:197
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\add_to_cart.php(197): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-25 10:29:28] SQLSTATE[42702]: Ambiguous column: 7 ERROR:  column reference "quantity" is ambiguous
+LINE 4:             SUM(quantity * price) as total
+                        ^ in C:\xampp\htdocs\trustfiles\api\cart\add_to_cart.php:197
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\add_to_cart.php(197): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-25 10:30:48] SQLSTATE[42702]: Ambiguous column: 7 ERROR:  column reference "quantity" is ambiguous
+LINE 4:             SUM(quantity * price) as total
+                        ^ in C:\xampp\htdocs\trustfiles\api\cart\add_to_cart.php:197
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\add_to_cart.php(197): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-25 10:30:48] SQLSTATE[42702]: Ambiguous column: 7 ERROR:  column reference "quantity" is ambiguous
+LINE 4:             SUM(quantity * price) as total
+                        ^ in C:\xampp\htdocs\trustfiles\api\cart\add_to_cart.php:197
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\add_to_cart.php(197): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-25 10:30:49] SQLSTATE[42702]: Ambiguous column: 7 ERROR:  column reference "quantity" is ambiguous
+LINE 4:             SUM(quantity * price) as total
+                        ^ in C:\xampp\htdocs\trustfiles\api\cart\add_to_cart.php:197
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\add_to_cart.php(197): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-25 10:33:00] SQLSTATE[42702]: Ambiguous column: 7 ERROR:  column reference "quantity" is ambiguous
+LINE 4:             SUM(quantity * price) as total
+                        ^ in C:\xampp\htdocs\trustfiles\api\cart\add_to_cart.php:197
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\add_to_cart.php(197): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-25 10:33:33] SQLSTATE[42702]: Ambiguous column: 7 ERROR:  column reference "quantity" is ambiguous
+LINE 4:             SUM(quantity * price) as total
+                        ^ in C:\xampp\htdocs\trustfiles\api\cart\add_to_cart.php:197
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\add_to_cart.php(197): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-25 10:42:59] SQLSTATE[42703]: Undefined column: 7 ERROR:  column p.images does not exist
+LINE 12:             p.images,
+                     ^ in C:\xampp\htdocs\trustfiles\api\cart\get_cart.php:73
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\get_cart.php(73): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-25 10:45:39] SQLSTATE[42703]: Undefined column: 7 ERROR:  column p.images does not exist
+LINE 12:             p.images,
+                     ^ in C:\xampp\htdocs\trustfiles\api\cart\get_cart.php:73
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\get_cart.php(73): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-25 11:03:33] SQLSTATE[42702]: Ambiguous column: 7 ERROR:  column reference "quantity" is ambiguous
+LINE 4:             SUM(quantity * price) as total
+                        ^ in C:\xampp\htdocs\trustfiles\api\cart\update_cart.php:176
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\update_cart.php(176): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-25 11:03:34] SQLSTATE[42702]: Ambiguous column: 7 ERROR:  column reference "quantity" is ambiguous
+LINE 4:             SUM(quantity * price) as total
+                        ^ in C:\xampp\htdocs\trustfiles\api\cart\update_cart.php:176
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\update_cart.php(176): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-25 11:13:18] SQLSTATE[42702]: Ambiguous column: 7 ERROR:  column reference "quantity" is ambiguous
+LINE 4:             SUM(quantity * price) as total
+                        ^ in C:\xampp\htdocs\trustfiles\api\cart\update_cart.php:176
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\update_cart.php(176): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-25 11:13:21] SQLSTATE[42702]: Ambiguous column: 7 ERROR:  column reference "quantity" is ambiguous
+LINE 4:             SUM(quantity * price) as total
+                        ^ in C:\xampp\htdocs\trustfiles\api\cart\update_cart.php:176
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\update_cart.php(176): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-25 11:13:49] SQLSTATE[42702]: Ambiguous column: 7 ERROR:  column reference "quantity" is ambiguous
+LINE 4:             SUM(quantity * price) as total
+                        ^ in C:\xampp\htdocs\trustfiles\api\cart\update_cart.php:176
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\update_cart.php(176): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-25 11:13:53] SQLSTATE[42702]: Ambiguous column: 7 ERROR:  column reference "quantity" is ambiguous
+LINE 4:             SUM(quantity * price) as total
+                        ^ in C:\xampp\htdocs\trustfiles\api\cart\update_cart.php:176
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\update_cart.php(176): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-25 11:14:38] SQLSTATE[42702]: Ambiguous column: 7 ERROR:  column reference "quantity" is ambiguous
+LINE 4:             SUM(quantity * price) as total
+                        ^ in C:\xampp\htdocs\trustfiles\api\cart\update_cart.php:176
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\update_cart.php(176): PDOStatement->execute(Array)
+#1 {main}
+
+[2026-03-25 11:16:43] SQLSTATE[42702]: Ambiguous column: 7 ERROR:  column reference "quantity" is ambiguous
+LINE 4:             SUM(quantity * price) as total
+                        ^ in C:\xampp\htdocs\trustfiles\api\cart\remove_from_cart.php:115
+Stack trace:
+#0 C:\xampp\htdocs\trustfiles\api\cart\remove_from_cart.php(115): PDOStatement->execute(Array)
+#1 {main}
+

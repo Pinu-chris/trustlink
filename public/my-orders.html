@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - TrustLink</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar"><!-- Same navigation --></nav>
+
+    <div class="container">
+        <h1>My Orders</h1>
+        
+        <div class="order-filters">
+            <button class="filter-btn active" data-status="all">All Orders</button>
+            <button class="filter-btn" data-status="pending">Pending</button>
+            <button class="filter-btn" data-status="accepted">Accepted</button>
+            <button class="filter-btn" data-status="completed">Completed</button>
+            <button class="filter-btn" data-status="cancelled">Cancelled</button>
+        </div>
+        
+        <div id="ordersContent" class="orders-container">
+            <div class="loading">Loading orders...</div>
+        </div>
+    </div>
+
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/app.js"></script>
+    <script>
+        let currentStatus = 'all';
+        
+        async function loadOrders() {
+            if (!App.isLoggedIn) {
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            const params = { role: 'buyer', per_page: 20 };
+            if (currentStatus !== 'all') {
+                params.status = currentStatus;
+            }
+            
+            try {
+                const response = await API.get('/orders/get_orders.php', params);
+                if (response.success) {
+                    renderOrders(response.data);
+                }
+            } catch (error) {
+                document.getElementById('ordersContent').innerHTML = '<div class="error">Failed to load orders</div>';
+            }
+        }
+        
+        function renderOrders(orders) {
+            const container = document.getElementById('ordersContent');
+            
+            if (!orders || orders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p>No orders found.</p>
+                        <a href="/products.html" class="btn btn-primary">Start Shopping</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = orders.map(order => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-info">
+                            <span class="order-code">${escapeHtml(order.order_code)}</span>
+                            <span class="order-status status-${order.status}">${order.status_display}</span>
+                        </div>
+                        <span class="order-date">${formatDate(order.created_at)}</span>
+                    </div>
+                    
+                    <div class="order-details">
+                        <div class="order-summary">
+                            <span>Farmer: ${escapeHtml(order.farmer.name)}</span>
+                            <span>Items: ${order.item_count}</span>
+                            <span>Total: KES ${order.total.toLocaleString()}</span>
+                        </div>
+                        <div class="order-actions">
+                            <a href="/order-detail.html?id=${order.id}" class="btn btn-sm btn-outline">View Details</a>
+                            ${order.status === 'pending' ? `
+                                <button class="btn btn-sm btn-danger" onclick="cancelOrder(${order.id})">Cancel Order</button>
+                            ` : ''}
+                            ${order.status === 'completed' ? `
+                                <a href="/product-detail.html?review=${order.id}" class="btn btn-sm btn-primary">Leave Review</a>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        async function cancelOrder(orderId) {
+            if (!confirm('Are you sure you want to cancel this order?')) return;
+            
+            try {
+                const response = await API.post('/orders/cancel_order.php', { order_id: orderId, reason: 'Cancelled by customer' });
+                if (response.success) {
+                    showToast('Order cancelled successfully', 'success');
+                    loadOrders();
+                }
+            } catch (error) {
+                showToast(error.message || 'Failed to cancel order', 'error');
+            }
+        }
+        
+        function formatDate(dateStr) {
+            return new Date(dateStr).toLocaleDateString('en-KE');
+        }
+        
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentStatus = btn.dataset.status;
+                loadOrders();
+            });
+        });
+        
+        document.addEventListener('DOMContentLoaded', loadOrders);
+    </script>
+</body>
+</html>

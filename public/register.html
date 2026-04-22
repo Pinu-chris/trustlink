@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - TrustLink</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="/">
+                    <span class="logo-icon">🌾</span>
+                    <span class="logo-text">TrustLink</span>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="products.html" class="nav-link">Browse Products</a>
+                <a href="login.html" class="btn btn-outline">Sign In</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="form-container">
+        <h2>Create Account</h2>
+        <p class="text-muted">Join TrustLink - Kenya's trusted marketplace</p>
+        
+        <div id="alertContainer"></div>
+        
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" placeholder="John Doe">
+                <span class="error" id="nameError"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" placeholder="0712345678">
+                <span class="error" id="phoneError"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="role">I want to</label>
+                <select id="role" name="role">
+                    <option value="buyer">Buy products</option>
+                    <option value="farmer">Sell my products</option>
+                    <option value="service_provider">Offer services</option>
+                </select>
+                <span class="error" id="roleError"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="location">Location (Estate/Ward)</label>
+                <input type="text" id="location" name="location" placeholder="e.g., Kilimani, Nairobi">
+                <span class="error" id="locationError"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="At least 6 characters">
+                <span class="error" id="passwordError"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="password_confirm">Confirm Password</label>
+                <input type="password" id="password_confirm" name="password_confirm">
+                <span class="error" id="passwordConfirmError"></span>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-large" style="width: 100%;" id="submitBtn">
+                Create Account
+            </button>
+        </form>
+        
+        <p class="text-center mt-4">
+            Already have an account? <a href="login.html">Sign in</a>
+        </p>
+        
+        <p class="text-center text-muted small mt-4">
+            By signing up, you agree to our <a href="/terms.html">Terms of Service</a> and <a href="/privacy.html">Privacy Policy</a>
+        </p>
+    </div>
+
+    <script src="../assets/js/api.js"></script>
+    <script>
+        const form = document.getElementById('registerForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const alertContainer = document.getElementById('alertContainer');
+        
+        function showAlert(message, type = 'error') {
+            alertContainer.innerHTML = `<div class="alert alert-${type}">${escapeHtml(message)}</div>`;
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+        
+        function clearErrors() {
+            document.querySelectorAll('.error').forEach(el => el.textContent = '');
+            document.querySelectorAll('.form-group input, .form-group select').forEach(el => {
+                el.classList.remove('error-border');
+            });
+        }
+        
+        function showFieldError(field, message) {
+            const errorEl = document.getElementById(`${field}Error`);
+            if (errorEl) {
+                errorEl.textContent = message;
+                document.getElementById(field)?.classList.add('error-border');
+            }
+        }
+        
+        // Get role from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const roleParam = urlParams.get('role');
+        if (roleParam && ['buyer', 'farmer', 'service_provider'].includes(roleParam)) {
+            document.getElementById('role').value = roleParam;
+        }
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearErrors();
+            
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const role = document.getElementById('role').value;
+            const location = document.getElementById('location').value.trim();
+            const password = document.getElementById('password').value;
+            const passwordConfirm = document.getElementById('password_confirm').value;
+            
+            // Validation
+            let hasError = false;
+            
+            if (!name) {
+                showFieldError('name', 'Full name is required');
+                hasError = true;
+            } else if (name.length < 2) {
+                showFieldError('name', 'Name must be at least 2 characters');
+                hasError = true;
+            }
+            
+            if (!phone) {
+                showFieldError('phone', 'Phone number is required');
+                hasError = true;
+            } else if (!/^(07|01)[0-9]{8}$/.test(phone)) {
+                showFieldError('phone', 'Invalid Kenyan phone number (e.g., 0712345678)');
+                hasError = true;
+            }
+            
+            if (!password) {
+                showFieldError('password', 'Password is required');
+                hasError = true;
+            } else if (password.length < 6) {
+                showFieldError('password', 'Password must be at least 6 characters');
+                hasError = true;
+            }
+            
+            if (password !== passwordConfirm) {
+                showFieldError('passwordConfirm', 'Passwords do not match');
+                hasError = true;
+            }
+            
+            if (hasError) return;
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Creating account...';
+            
+            try {
+                const response = await API.post('/auth/register.php', {
+                    name,
+                    phone,
+                    role,
+                    location,
+                    password,
+                    password_confirm: passwordConfirm
+                });
+                
+                if (response.success) {
+                    showAlert(response.message, 'success');
+                    setTimeout(() => {
+                        window.location.href = '/trustfiles/public/login.html';
+                    }, 1500);
+                }
+            } catch (error) {
+                showAlert(error.message || 'Registration failed. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Create Account';
+            }
+        });
+    </script>
+</body>
+</html>

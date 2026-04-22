@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Received Orders - TrustLink</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar"><!-- Same navigation --></nav>
+
+    <div class="container">
+        <h1>Received Orders</h1>
+        
+        <div class="order-filters">
+            <button class="filter-btn active" data-status="all">All Orders</button>
+            <button class="filter-btn" data-status="pending">Pending</button>
+            <button class="filter-btn" data-status="accepted">Accepted</button>
+            <button class="filter-btn" data-status="completed">Completed</button>
+        </div>
+        
+        <div id="ordersContent" class="orders-container">
+            <div class="loading">Loading orders...</div>
+        </div>
+    </div>
+
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/app.js"></script>
+    <script>
+        let currentStatus = 'all';
+        
+        async function loadOrders() {
+            if (!App.isLoggedIn || App.user?.role !== 'farmer') {
+                window.location.href = '/dashboard.html';
+                return;
+            }
+            
+            const params = { role: 'farmer', per_page: 20 };
+            if (currentStatus !== 'all') {
+                params.status = currentStatus;
+            }
+            
+            try {
+                const response = await API.get('/orders/get_orders.php', params);
+                if (response.success) {
+                    renderOrders(response.data);
+                }
+            } catch (error) {
+                document.getElementById('ordersContent').innerHTML = '<div class="error">Failed to load orders</div>';
+            }
+        }
+        
+        function renderOrders(orders) {
+            const container = document.getElementById('ordersContent');
+            
+            if (!orders || orders.length === 0) {
+                container.innerHTML = '<div class="empty-state">No orders received yet.</div>';
+                return;
+            }
+            
+            container.innerHTML = orders.map(order => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-info">
+                            <span class="order-code">${escapeHtml(order.order_code)}</span>
+                            <span class="order-status status-${order.status}">${order.status_display}</span>
+                        </div>
+                        <span class="order-date">${formatDate(order.created_at)}</span>
+                    </div>
+                    
+                    <div class="order-details">
+                        <div class="order-summary">
+                            <span>Buyer: ${escapeHtml(order.buyer.name)}</span>
+                            <span>Phone: ${escapeHtml(order.buyer.phone)}</span>
+                            <span>Items: ${order.item_count}</span>
+                            <span>Total: KES ${order.total.toLocaleString()}</span>
+                        </div>
+                        <div class="delivery-info">
+                            <span>📍 ${escapeHtml(order.location)}</span>
+                        </div>
+                        <div class="order-actions">
+                            <a href="/order-detail.html?id=${order.id}" class="btn btn-sm btn-outline">View Details</a>
+                            ${order.status === 'pending' ? `
+                                <button class="btn btn-sm btn-primary" onclick="updateOrderStatus(${order.id}, 'accepted')">Accept Order</button>
+                            ` : ''}
+                            ${order.status === 'accepted' ? `
+                                <button class="btn btn-sm btn-success" onclick="updateOrderStatus(${order.id}, 'completed')">Mark Completed</button>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        async function updateOrderStatus(orderId, status) {
+            try {
+                const response = await API.put('/orders/update_order_status.php', { order_id: orderId, status });
+                if (response.success) {
+                    showToast(`Order ${status === 'accepted' ? 'accepted' : 'marked completed'} successfully`, 'success');
+                    loadOrders();
+                }
+            } catch (error) {
+                showToast(error.message || 'Failed to update order', 'error');
+            }
+        }
+        
+        function formatDate(dateStr) {
+            return new Date(dateStr).toLocaleDateString('en-KE');
+        }
+        
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentStatus = btn.dataset.status;
+                loadOrders();
+            });
+        });
+        
+        document.addEventListener('DOMContentLoaded', loadOrders);
+    </script>
+</body>
+</html>

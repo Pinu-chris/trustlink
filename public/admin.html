@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - TrustLink</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar"><!-- Same navigation --></nav>
+
+    <div class="container">
+        <h1>Admin Panel</h1>
+        
+        <div class="admin-tabs">
+            <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+            <button class="tab-btn" data-tab="users">Users</button>
+            <button class="tab-btn" data-tab="orders">Orders</button>
+            <button class="tab-btn" data-tab="products">Products</button>
+            <button class="tab-btn" data-tab="reports">Reports</button>
+        </div>
+        
+        <div id="dashboardTab" class="tab-content active">
+            <div class="loading">Loading dashboard...</div>
+        </div>
+        
+        <div id="usersTab" class="tab-content">
+            <div class="loading">Loading users...</div>
+        </div>
+        
+        <div id="ordersTab" class="tab-content">
+            <div class="loading">Loading orders...</div>
+        </div>
+        
+        <div id="productsTab" class="tab-content">
+            <div class="loading">Loading products...</div>
+        </div>
+        
+        <div id="reportsTab" class="tab-content">
+            <div class="loading">Loading reports...</div>
+        </div>
+    </div>
+
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/app.js"></script>
+    <script>
+        // Redirect if not admin
+        if (App.isLoggedIn && App.user?.role !== 'admin') {
+            window.location.href = '/dashboard.html';
+        }
+        
+        let currentTab = 'dashboard';
+        
+        async function loadTab(tab) {
+            switch(tab) {
+                case 'dashboard':
+                    await loadDashboard();
+                    break;
+                case 'users':
+                    await loadUsers();
+                    break;
+                case 'orders':
+                    await loadAllOrders();
+                    break;
+                case 'products':
+                    await loadAllProducts();
+                    break;
+                case 'reports':
+                    await loadReports();
+                    break;
+            }
+        }
+        
+        async function loadDashboard() {
+            const container = document.getElementById('dashboardTab');
+            try {
+                const response = await API.get('/admin/get_reports.php', { period: 'month' });
+                if (response.success && response.data) {
+                    const data = response.data;
+                    container.innerHTML = `
+                        <div class="admin-stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">👥</div>
+                                <div class="stat-value">${data.users.total}</div>
+                                <div class="stat-label">Total Users</div>
+                                <div class="stat-trend">+${data.users.new_in_period} this month</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">🛒</div>
+                                <div class="stat-value">${data.orders.total}</div>
+                                <div class="stat-label">Total Orders</div>
+                                <div class="stat-trend">${data.orders.orders_in_period} this month</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">💰</div>
+                                <div class="stat-value">KES ${data.orders.total_revenue.toLocaleString()}</div>
+                                <div class="stat-label">Total Revenue</div>
+                                <div class="stat-trend">KES ${data.orders.revenue_in_period.toLocaleString()} this month</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">📦</div>
+                                <div class="stat-value">${data.products.active}</div>
+                                <div class="stat-label">Active Products</div>
+                                <div class="stat-trend">${data.products.total} total</div>
+                            </div>
+                        </div>
+                        
+                        <div class="admin-section">
+                            <h3>Top Performing Farmers</h3>
+                            <div class="data-table">
+                                <table>
+                                    <thead>
+                                        <tr><th>Farmer</th><th>Trust Score</th><th>Orders</th><th>Earnings</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        ${data.top_farmers.map(f => `
+                                            <tr>
+                                                <td>${escapeHtml(f.name)}</td>
+                                                <td>${f.trust_score.toFixed(1)} ★</td>
+                                                <td>${f.total_orders}</td>
+                                                <td>KES ${f.total_earnings.toLocaleString()}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                container.innerHTML = '<div class="error">Failed to load dashboard</div>';
+            }
+        }
+        
+        async function loadUsers() {
+            const container = document.getElementById('usersTab');
+            try {
+                const response = await API.get('/admin/get_users.php', { per_page: 50 });
+                if (response.success && response.data) {
+                    container.innerHTML = `
+                        <div class="admin-section">
+                            <div class="section-header">
+                                <h3>All Users</h3>
+                                <div class="search-box">
+                                    <input type="text" id="userSearch" placeholder="Search users..." onkeyup="searchUsers()">
+                                </div>
+                            </div>
+                            <div class="data-table">
+                                <table id="usersTable">
+                                    <thead>
+                                        <tr><th>Name</th><th>Phone</th><th>Role</th><th>Trust Score</th><th>Status</th><th>Actions</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        ${response.data.map(user => `
+                                            <tr>
+                                                <td>${escapeHtml(user.name)}</td>
+                                                <td>${escapeHtml(user.phone)}</td>
+                                                <td>${user.role_display}</td>
+                                                <td>${user.trust_score.toFixed(1)} ★</td>
+                                                <td><span class="status-badge ${user.status ? 'active' : 'suspended'}">${user.status ? 'Active' : 'Suspended'}</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline" onclick="viewUser(${user.id})">View</button>
+                                                    <button class="btn btn-sm ${user.status ? 'btn-danger' : 'btn-success'}" 
+                                                            onclick="toggleUserStatus(${user.id}, ${!user.status})">
+                                                        ${user.status ? 'Suspend' : 'Activate'}
+                                                    </button>
+                                                    ${!user.id_verified ? `<button class="btn btn-sm btn-primary" onclick="verifyUser(${user.id})">Verify ID</button>` : ''}
+                                                </td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                container.innerHTML = '<div class="error">Failed to load users</div>';
+            }
+        }
+        
+        async function toggleUserStatus(userId, activate) {
+            const action = activate ? 'reactivate' : 'suspend';
+            if (confirm(`Are you sure you want to ${action} this user?`)) {
+                try {
+                    const response = await API.post('/admin/suspend_user.php', { user_id: userId, action });
+                    if (response.success) {
+                        showToast(response.message, 'success');
+                        loadUsers();
+                    }
+                } catch (error) {
+                    showToast(error.message, 'error');
+                }
+            }
+        }
+        
+        async function verifyUser(userId) {
+            try {
+                const response = await API.post('/admin/verify_user.php', { user_id: userId, action: 'verify_id' });
+                if (response.success) {
+                    showToast(response.message, 'success');
+                    loadUsers();
+                }
+            } catch (error) {
+                showToast(error.message, 'error');
+            }
+        }
+        
+        async function loadAllOrders() {
+            const container = document.getElementById('ordersTab');
+            try {
+                const response = await API.get('/orders/get_orders.php', { role: 'admin', per_page: 50 });
+                if (response.success && response.data) {
+                    container.innerHTML = `
+                        <div class="admin-section">
+                            <h3>All Orders</h3>
+                            <div class="data-table">
+                                <table>
+                                    <thead><tr><th>Order Code</th><th>Buyer</th><th>Farmer</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+                                    <tbody>
+                                        ${response.data.map(order => `
+                                            <tr>
+                                                <td>${escapeHtml(order.order_code)}</td>
+                                                <td>${escapeHtml(order.buyer.name)}</td>
+                                                <td>${escapeHtml(order.farmer.name)}</td>
+                                                <td>KES ${order.total.toLocaleString()}</td>
+                                                <td><span class="status-badge ${order.status}">${order.status_display}</span></td>
+                                                <td>${new Date(order.created_at).toLocaleDateString()}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                container.innerHTML = '<div class="error">Failed to load orders</div>';
+            }
+        }
+        
+        async function loadAllProducts() {
+            const container = document.getElementById('productsTab');
+            try {
+                const response = await API.get('/products/get_products.php', { per_page: 50 });
+                if (response.success && response.data) {
+                    container.innerHTML = `
+                        <div class="admin-section">
+                            <h3>All Products</h3>
+                            <div class="data-table">
+                                <table>
+                                    <thead><tr><th>Name</th><th>Farmer</th><th>Price</th><th>Stock</th><th>Status</th></tr></thead>
+                                    <tbody>
+                                        ${response.data.map(product => `
+                                            <tr>
+                                                <td>${escapeHtml(product.name)}</td>
+                                                <td>${escapeHtml(product.farmer.name)}</td>
+                                                <td>KES ${product.price.toLocaleString()}</td>
+                                                <td>${product.quantity} ${product.unit_abbr}</td>
+                                                <td><span class="status-badge ${product.quantity > 0 ? 'active' : 'out'}">${product.quantity > 0 ? 'In Stock' : 'Out of Stock'}</span></td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                container.innerHTML = '<div class="error">Failed to load products</div>';
+            }
+        }
+        
+        async function loadReports() {
+            const container = document.getElementById('reportsTab');
+            try {
+                const response = await API.get('/admin/get_reports.php', { period: 'month' });
+                if (response.success && response.data) {
+                    const data = response.data;
+                    container.innerHTML = `
+                        <div class="admin-section">
+                            <h3>Platform Reports</h3>
+                            <div class="report-grid">
+                                <div class="report-card">
+                                    <h4>User Statistics</h4>
+                                    <p>Total Users: ${data.users.total}</p>
+                                    <p>Buyers: ${data.users.buyers}</p>
+                                    <p>Farmers: ${data.users.farmers}</p>
+                                    <p>Verified Users: ${data.users.verified}</p>
+                                </div>
+                                <div class="report-card">
+                                    <h4>Order Statistics</h4>
+                                    <p>Total Orders: ${data.orders.total}</p>
+                                    <p>Completed: ${data.orders.completed}</p>
+                                    <p>Cancelled: ${data.orders.cancelled}</p>
+                                    <p>Average Order: KES ${data.orders.average_order_value.toLocaleString()}</p>
+                                </div>
+                                <div class="report-card">
+                                    <h4>Review Statistics</h4>
+                                    <p>Total Reviews: ${data.reviews.total}</p>
+                                    <p>Average Rating: ${data.reviews.average_rating.toFixed(1)} ★</p>
+                                    <p>5-Star: ${data.reviews.distribution[5]}</p>
+                                    <p>1-Star: ${data.reviews.distribution[1]}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                container.innerHTML = '<div class="error">Failed to load reports</div>';
+            }
+        }
+        
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                const tab = btn.dataset.tab;
+                document.getElementById(`${tab}Tab`).classList.add('active');
+                currentTab = tab;
+                loadTab(tab);
+            });
+        });
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDashboard();
+        });
+        
+        window.searchUsers = function() {
+            const searchTerm = document.getElementById('userSearch')?.value.toLowerCase();
+            const rows = document.querySelectorAll('#usersTable tbody tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - TrustLink</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="/">
+                    <span class="logo-icon">🌾</span>
+                    <span class="logo-text">TrustLink</span>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="products.html" class="nav-link">Browse Products</a>
+                <a href="register.html" class="btn btn-outline">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="form-container">
+        <h2>Welcome Back</h2>
+        <p class="text-muted">Sign in to your TrustLink account</p>
+        
+        <div id="alertContainer"></div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" placeholder="0712345678" autocomplete="off">
+                <span class="error" id="phoneError"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="••••••••">
+                <span class="error" id="passwordError"></span>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-large" style="width: 100%;" id="submitBtn">
+                Sign In
+            </button>
+        </form>
+        
+        <p class="text-center mt-4">
+            Don't have an account? <a href="register.html">Create an account</a>
+        </p>
+    </div>
+
+    <script src="../assets/js/api.js"></script>
+    <script>
+        const form = document.getElementById('loginForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const alertContainer = document.getElementById('alertContainer');
+        
+        function showAlert(message, type = 'error') {
+            alertContainer.innerHTML = `<div class="alert alert-${type}">${escapeHtml(message)}</div>`;
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+        
+        function clearErrors() {
+            document.querySelectorAll('.error').forEach(el => el.textContent = '');
+            document.querySelectorAll('.form-group input').forEach(el => {
+                el.classList.remove('error-border');
+            });
+        }
+        
+        function showFieldError(field, message) {
+            const errorEl = document.getElementById(`${field}Error`);
+            if (errorEl) {
+                errorEl.textContent = message;
+                document.getElementById(field)?.classList.add('error-border');
+            }
+        }
+        
+        form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearErrors();
+    
+    const phone = document.getElementById('phone').value.trim();
+    const password = document.getElementById('password').value;
+    
+    // Validation
+    let hasError = false;
+    if (!phone) {
+        showFieldError('phone', 'Phone number is required');
+        hasError = true;
+    } else if (!/^(07|01)[0-9]{8}$/.test(phone)) {
+        showFieldError('phone', 'Invalid Kenyan phone number');
+        hasError = true;
+    }
+    
+    if (!password) {
+        showFieldError('password', 'Password is required');
+        hasError = true;
+    }
+    
+    if (hasError) return;
+    
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Signing in...';
+    
+    try {
+        const response = await API.post('../auth/login.php', { phone, password });
+        
+        console.log('Login response:', response); // Debug log
+        
+                if (response.success) {
+                    showAlert(response.message, 'success');
+                    setTimeout(() => {
+                        // Use the redirect URL from response, default to dashboard.php
+                        window.location.href = response.data?.redirect || 'dashboard.php';
+                    }, 1000);
+                }
+         else {
+            showAlert(response.message || 'Login failed. Please try again.');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Sign In';
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        showAlert(error.message || 'Login failed. Please try again.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign In';
+    }
+});
+    </script>
+</body>
+</html>

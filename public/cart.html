@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - TrustLink</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar"><!-- Same navigation --></nav>
+
+    <div class="container">
+        <h1>Shopping Cart</h1>
+        
+        <div id="cartContent" class="cart-container">
+            <div class="loading">Loading cart...</div>
+        </div>
+    </div>
+
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/app.js"></script>
+    <script>
+        async function loadCart() {
+            if (!App.isLoggedIn) {
+                document.getElementById('cartContent').innerHTML = `
+                    <div class="empty-cart">
+                        <p>Please login to view your cart.</p>
+                        <a href="/login.html" class="btn btn-primary">Login</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            try {
+                const response = await API.get('/cart/get_cart.php');
+                if (response.success && response.data) {
+                    renderCart(response.data);
+                }
+            } catch (error) {
+                document.getElementById('cartContent').innerHTML = '<div class="error">Failed to load cart</div>';
+            }
+        }
+        
+        function renderCart(cart) {
+            const container = document.getElementById('cartContent');
+            
+            if (!cart.items || cart.items.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-cart">
+                        <p>Your cart is empty.</p>
+                        <a href="/products.html" class="btn btn-primary">Continue Shopping</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = `
+                <div class="cart-layout">
+                    <div class="cart-items">
+                        ${cart.items.map(item => `
+                            <div class="cart-item" data-id="${item.cart_item_id}">
+                                <img src="${item.product.images[0] || '/assets/images/default/product-placeholder.jpg'}" 
+                                     alt="${escapeHtml(item.product.name)}" class="cart-item-image">
+                                <div class="cart-item-details">
+                                    <h3>${escapeHtml(item.product.name)}</h3>
+                                    <p class="farmer-name">by ${escapeHtml(item.product.farmer.name)}</p>
+                                    <div class="price-info">
+                                        <span class="unit-price">KES ${item.product.price.toLocaleString()} / ${item.product.unit_abbr}</span>
+                                    </div>
+                                    <div class="quantity-controls">
+                                        <button class="qty-btn" onclick="updateQuantity(${item.cart_item_id}, ${item.quantity - 1})">-</button>
+                                        <span class="quantity">${item.quantity}</span>
+                                        <button class="qty-btn" onclick="updateQuantity(${item.cart_item_id}, ${item.quantity + 1})">+</button>
+                                        <span class="stock-info">${item.product.stock_quantity} available</span>
+                                    </div>
+                                    <div class="item-subtotal">Subtotal: KES ${item.subtotal.toLocaleString()}</div>
+                                    <button class="remove-btn" onclick="removeItem(${item.cart_item_id})">Remove</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="cart-summary">
+                        <h3>Order Summary</h3>
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span>KES ${cart.summary.subtotal.toLocaleString()}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Delivery Fee:</span>
+                            <span>KES ${cart.summary.delivery_fee.toLocaleString()}</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total:</span>
+                            <span>KES ${cart.summary.total.toLocaleString()}</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="deliveryLocation">Delivery Location</label>
+                            <input type="text" id="deliveryLocation" placeholder="Your estate/ward, e.g., Kilimani">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="instructions">Special Instructions (Optional)</label>
+                            <textarea id="instructions" rows="2" placeholder="E.g., Call before delivery, leave at gate..."></textarea>
+                        </div>
+                        
+                        ${cart.summary.has_invalid_items ? `
+                            <div class="alert alert-warning">
+                                Some items are no longer available or out of stock. Please remove them to proceed.
+                            </div>
+                        ` : ''}
+                        
+                        <button class="btn btn-primary btn-large" onclick="checkout()" ${cart.summary.has_invalid_items ? 'disabled' : ''}>
+                            Proceed to Checkout
+                        </button>
+                        
+                        <a href="/products.html" class="btn btn-outline btn-large">Continue Shopping</a>
+                    </div>
+                </div>
+            `;
+        }
+        
+        async function updateQuantity(cartItemId, newQuantity) {
+            if (newQuantity < 1) {
+                await removeItem(cartItemId);
+                return;
+            }
+            
+            try {
+                const response = await API.put('/cart/update_cart.php', { cart_item_id: cartItemId, quantity: newQuantity });
+                if (response.success) {
+                    loadCart();
+                } else {
+                    showToast(response.message || 'Failed to update quantity', 'error');
+                }
+            } catch (error) {
+                showToast(error.message || 'Failed to update quantity', 'error');
+            }
+        }
+        
+        async function removeItem(cartItemId) {
+            try {
+                const response = await API.delete(`/cart/remove_from_cart.php?cart_item_id=${cartItemId}`);
+                if (response.success) {
+                    showToast('Item removed from cart', 'success');
+                    loadCart();
+                }
+            } catch (error) {
+                showToast(error.message || 'Failed to remove item', 'error');
+            }
+        }
+        
+        async function checkout() {
+            const location = document.getElementById('deliveryLocation')?.value.trim();
+            const instructions = document.getElementById('instructions')?.value.trim();
+            
+            if (!location) {
+                showToast('Please enter your delivery location', 'error');
+                return;
+            }
+            
+            try {
+                const response = await API.post('/orders/place_order.php', {
+                    location,
+                    instructions,
+                    payment_method: 'cash'
+                });
+                
+                if (response.success) {
+                    showToast('Order placed successfully!', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/my-orders.html';
+                    }, 1500);
+                }
+            } catch (error) {
+                showToast(error.message || 'Failed to place order', 'error');
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', loadCart);
+    </script>
+</body>
+</html>
