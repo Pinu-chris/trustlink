@@ -1,6 +1,8 @@
- 
 <?php
 require_once dirname(__DIR__) . '/utils/auth_middleware.php';
+require_once dirname(__DIR__) . '/config/db.php';
+require_once dirname(__DIR__) . '/config/constants.php';
+require_once dirname(__DIR__) . '/utils/response.php';
 
 $auth = auth();
 $isLoggedIn = $auth->isAuthenticated();
@@ -373,7 +375,11 @@ $userAvatar = $userData['avatar'] ?? '/assets/images/default/avatar.png';
                 <p>We specialize in <strong>fresh vegetables, organic fruits, dairy products, grains, poultry, and agricultural services</strong> like tractor hiring and pest control.</p>
             </div>
             <div>
-                <img src="../assets/images/about-farming.jpg" alt="Kenyan farmer" style="width:100%; border-radius:12px;" onerror="this.src='https://via.placeholder.com/400x250?text=Farm+to+Table'">
+                <!-- FIXED: Missing closing bracket and recursive onerror -->
+                <img src="/assets/images/uploads/products/product_23_1774348273_0.png" 
+                     alt="Kenyan farmer" 
+                     style="width:100%; border-radius:12px;" 
+                     onerror="this.src='/assets/images/default/placeholder.jpg'">
             </div>
         </div>
     </div>
@@ -618,18 +624,29 @@ $userAvatar = $userData['avatar'] ?? '/assets/images/default/avatar.png';
         try {
             const response = await API.get('/products/get_products.php?per_page=8&sort=newest');
             if (response.success && response.data) {
-                container.innerHTML = response.data.map(product => `
-                    <div class="product-card" style="min-width: 250px;" onclick="location.href='product-detail.php?id=${product.id}'">
-                        <img src="${product.primary_image || '../assets/images/default/product-placeholder.jpg'}" alt="${product.name}" class="product-image">
-                        <div class="product-info">
-                            <h3>${product.name}</h3>
-                            <div class="product-price">KES ${formatPrice(product.price)} / ${product.unit_abbr}</div>
-                            <div class="product-rating">${renderStars(product.avg_rating || 0)} ${product.avg_rating ? product.avg_rating.toFixed(1) : 'No ratings'}</div>
+                container.innerHTML = response.data.map(product => {
+                    // Use a proper fallback image
+                    const imgSrc = product.primary_image && product.primary_image !== '' 
+                        ? product.primary_image 
+                        : '/assets/images/default/placeholder.jpg';
+                    return `
+                        <div class="product-card" style="min-width: 250px;" onclick="location.href='product-detail.php?id=${product.id}'">
+                            <img src="${imgSrc}" alt="${product.name}" class="product-image" onerror="this.src='/assets/images/default/placeholder.jpg'">
+                            <div class="product-info">
+                                <h3>${escapeHtml(product.name)}</h3>
+                                <div class="product-price">KES ${formatPrice(product.price)} / ${product.unit_abbr}</div>
+                                <div class="product-rating">${renderStars(product.avg_rating || 0)} ${product.avg_rating ? product.avg_rating.toFixed(1) : 'No ratings'}</div>
+                            </div>
                         </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
+            } else {
+                container.innerHTML = '<p>Failed to load products. Please try again later.</p>';
             }
-        } catch (e) { console.error(e); }
+        } catch (e) { 
+            console.error(e); 
+            container.innerHTML = '<p>Error loading products. Check your connection.</p>';
+        }
     }
 
     // Load flash sale products (with discount logic)
@@ -642,12 +659,15 @@ $userAvatar = $userData['avatar'] ?? '/assets/images/default/avatar.png';
                 container.innerHTML = response.data.slice(0,4).map(product => {
                     const originalPrice = product.price;
                     const discountedPrice = originalPrice * 0.7;
+                    const imgSrc = product.primary_image && product.primary_image !== '' 
+                        ? product.primary_image 
+                        : '/assets/images/default/placeholder.jpg';
                     return `
                         <div class="product-card" onclick="location.href='product-detail.php?id=${product.id}'">
                             <span class="flash-sale">-30%</span>
-                            <img src="${product.primary_image || '../assets/images/default/product-placeholder.jpg'}" class="product-image">
+                            <img src="${imgSrc}" alt="${product.name}" class="product-image" onerror="this.src='/assets/images/default/placeholder.jpg'">
                             <div class="product-info">
-                                <h3>${product.name}</h3>
+                                <h3>${escapeHtml(product.name)}</h3>
                                 <div class="product-price">
                                     <span style="text-decoration: line-through; color: gray;">KES ${formatPrice(originalPrice)}</span>
                                     <span style="color: red;"> KES ${formatPrice(discountedPrice)}</span>
@@ -668,18 +688,34 @@ $userAvatar = $userData['avatar'] ?? '/assets/images/default/avatar.png';
         try {
             const response = await API.get('/products/get_products.php?per_page=4&sort=trust_desc');
             if (response.success && response.data) {
-                container.innerHTML = response.data.map(product => `
-                    <div class="product-card" onclick="location.href='product-detail.php?id=${product.id}'">
-                        <img src="${product.primary_image || '../assets/images/default/product-placeholder.jpg'}" class="product-image">
-                        <div class="product-info">
-                            <h3>${product.name}</h3>
-                            <div class="product-price">KES ${formatPrice(product.price)} / ${product.unit_abbr}</div>
-                            <div class="product-rating">${renderStars(product.avg_rating || 0)} ${product.avg_rating ? product.avg_rating.toFixed(1) : 'New'}</div>
+                container.innerHTML = response.data.map(product => {
+                    const imgSrc = product.primary_image && product.primary_image !== '' 
+                        ? product.primary_image 
+                        : '/assets/images/default/placeholder.jpg';
+                    return `
+                        <div class="product-card" onclick="location.href='product-detail.php?id=${product.id}'">
+                            <img src="${imgSrc}" alt="${product.name}" class="product-image" onerror="this.src='/assets/images/default/placeholder.jpg'">
+                            <div class="product-info">
+                                <h3>${escapeHtml(product.name)}</h3>
+                                <div class="product-price">KES ${formatPrice(product.price)} / ${product.unit_abbr}</div>
+                                <div class="product-rating">${renderStars(product.avg_rating || 0)} ${product.avg_rating ? product.avg_rating.toFixed(1) : 'New'}</div>
+                            </div>
                         </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
         } catch (e) { console.error(e); }
+    }
+
+    // Helper to escape HTML to prevent XSS
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
     }
 
     // Animated counters (with Intersection Observer)
@@ -716,7 +752,8 @@ $userAvatar = $userData['avatar'] ?? '/assets/images/default/avatar.png';
             }
         });
     }, { threshold: 0.5 });
-    observer.observe(document.querySelector('.stats-section'));
+    const statsSection = document.querySelector('.stats-section');
+    if (statsSection) observer.observe(statsSection);
 
     // Carousel scrolling
     const carousel = document.getElementById('featuredCarousel');
@@ -759,9 +796,8 @@ $userAvatar = $userData['avatar'] ?? '/assets/images/default/avatar.png';
         "🍅 Tomatoes from Naivasha now in stock",
         "🚜 Tractor hiring service launched in Nakuru"
     ];
-    let tickerContent = "";
     function updateTicker() {
-        tickerContent = activities.map(a => `&nbsp;&nbsp;• ${a} &nbsp;&nbsp;`).join('');
+        let tickerContent = activities.map(a => `&nbsp;&nbsp;• ${a} &nbsp;&nbsp;`).join('');
         document.getElementById('liveTicker').innerHTML = tickerContent;
         setTimeout(() => {
             const first = activities.shift();
@@ -775,7 +811,9 @@ $userAvatar = $userData['avatar'] ?? '/assets/images/default/avatar.png';
     document.querySelectorAll('.category-card').forEach(card => {
         card.addEventListener('click', () => {
             const category = card.getAttribute('data-category');
-            window.location.href = `products.php?category=${category}`;
+            if (category) {
+                window.location.href = `products.php?category=${category}`;
+            }
         });
     });
 
@@ -793,22 +831,28 @@ $userAvatar = $userData['avatar'] ?? '/assets/images/default/avatar.png';
     });
 
     // Newsletter subscription (demo)
-    document.getElementById('newsletterForm')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        alert('Thank you for subscribing! You will receive our farm fresh updates.');
-        e.target.reset();
-    });
+    const newsletterForm = document.getElementById('newsletterForm');
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Thank you for subscribing! You will receive our farm fresh updates.');
+            e.target.reset();
+        });
+    }
+
+    // Mobile menu toggle (basic)
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    if (mobileBtn) {
+        mobileBtn.addEventListener('click', () => {
+            const navLinks = document.querySelector('.nav-links');
+            if (navLinks) navLinks.classList.toggle('active');
+        });
+    }
 
     // Load all sections
     loadFeaturedProducts();
     loadFlashProducts();
     loadRecommendations();
-
-    // Mobile menu toggle (basic)
-    document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
-        document.querySelector('.nav-links').classList.toggle('active');
-    });
 </script>
 </body>
 </html>
-```
